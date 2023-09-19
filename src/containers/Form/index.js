@@ -4,10 +4,12 @@ import Field, { FIELD_TYPES } from "../../components/Field";
 import Select from "../../components/Select";
 import Button, { BUTTON_TYPES } from "../../components/Button";
 
-const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 1000); })
+const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 100); })
 
 const Form = ({ onSuccess, onError }) => {
   const [sending, setSending] = useState(false);
+
+  
   const sendContact = useCallback(
     async (evt) => {
       evt.preventDefault();
@@ -15,20 +17,23 @@ const Form = ({ onSuccess, onError }) => {
       // We try to call mockContactApi
       try {
         await mockContactApi();
-        setSending(false);
+        onSuccess();
+        setSending(false); 
+        
       } catch (err) {
-        setSending(false);
         onError(err);
+        setSending(false);
       }
     },
     [onSuccess, onError]
   );
+
   return (
     <form onSubmit={sendContact}>
       <div className="row">
         <div className="col">
-          <Field placeholder="" label="Nom" />
-          <Field placeholder="" label="Prénom" />
+          <Field placeholder="" label="Nom"/>
+          <Field placeholder="" label="Prénom"/>
           <Select
             selection={["Personel", "Entreprise"]}
             onChange={() => null}
@@ -37,7 +42,8 @@ const Form = ({ onSuccess, onError }) => {
             titleEmpty
           />
           <Field placeholder="" label="Email" />
-          <Button type={BUTTON_TYPES.SUBMIT} disabled={sending}>
+          <Button type={BUTTON_TYPES.SUBMIT} 
+          disabled={sending}>
             {sending ? "En cours" : "Envoyer"}
           </Button>
         </div>
